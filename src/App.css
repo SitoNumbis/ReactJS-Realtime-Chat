@@ -1,0 +1,103 @@
+.app-header {
+  padding: 10px;
+  background-color: #282c34;
+  color: white;
+}
+
+ul {
+  padding: 0;
+  height: calc(100vh - 150px);
+  margin: 0;
+}
+
+ul h4 {
+  margin: 0;
+}
+
+.app-header > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  flex: 1;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  margin: 15px 10px;
+}
+
+.message-list {
+  width: 100%;
+  height: calc(100vh - 100px);
+  overflow: scroll;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eeeeee;
+  align-items: center;
+}
+
+.side-bar {
+  padding: 16px;
+  width: 276px;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  margin: 4px 10px 5px 0;
+}
+
+.user,
+.date {
+  font-size: 0.625rem;
+  color: #888888;
+}
+
+.user {
+  margin: 10px 10px 10px 0;
+}
+
+.message {
+  flex-grow: 1;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  height: 35px;
+  width: 100%;
+}
+
+label {
+  margin: 10px 0;
+}
+
+input[type="text"] {
+  flex: 1;
+  border-radius: 0.5rem;
+  padding: 10px;
+  height: 10px;
+}
+
+input[type="submit"] {
+  background: dodgerblue;
+  border: none;
+  border-radius: 0.5rem;
+  margin: 5px;
+  padding: 10px 15px;
+  color: aliceblue;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+input[type="submit"]:hover {
+  background: rgb(0, 128, 255);
+}
