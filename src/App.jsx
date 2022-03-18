@@ -168,16 +168,58 @@ const UsersList = ({ socket, users }) => {
 
 const App = () => {
   const [socket, setSocket] = useState(null);
+  const [init, setInit] = useState(false);
+  const [serverIp, setServerIp] = useState("");
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const newSocket = io(`http://localhost:3000`);
-    setSocket(newSocket);
+    if (init) {
+      const newSocket = io(serverIp);
+      setSocket(newSocket);
+    }
+
     return () => newSocket.close();
   }, [setSocket]);
 
+  const handlerIp = (e) => {
+    const { value } = e.target;
+    var regEx =
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    if (value.match(regEx)) setError(false);
+    else setError(true);
+    setServerIp(value);
+  };
+
+  const connect = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="App">
-      {socket ? (
+      {!init && (
+        <div className="modal-background">
+          <div className="modal">
+            <form onSubmit={connect}>
+              <label>IP Address</label>
+              <div>
+                <input
+                  type="text"
+                  className="form-input"
+                  id="ipv4"
+                  name="ipv4"
+                  placeholder="###.###.###.###:3000"
+                  value={serverIp}
+                  onChange={handlerIp}
+                />
+                <input type="submit" value="Conectar" />
+              </div>
+              {error && <label className="error">Ip no válido</label>}
+              {!socket && <label className="error">No tienes conexión</label>}
+            </form>
+          </div>
+        </div>
+      )}
+      {socket && (
         <>
           <div className="chat-container">
             <Messages socket={socket} />
@@ -185,8 +227,6 @@ const App = () => {
           </div>
           <Users socket={socket} />
         </>
-      ) : (
-        <div>Not Connected</div>
       )}
     </div>
   );
