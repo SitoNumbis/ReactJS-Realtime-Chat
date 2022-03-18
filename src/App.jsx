@@ -166,20 +166,35 @@ const UsersList = ({ socket, users }) => {
   );
 };
 
-const App = () => {
+const ChatApp = ({ servierIp }) => {
   const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io("localhost:3000");
+    alert(newSocket.);
+    setSocket(newSocket);
+    return () => newSocket.close();
+  }, [setSocket]);
+
+  return (
+    <>
+      {socket && (
+        <>
+          <div className="chat-container">
+            <Messages socket={socket} />
+            <MessageInput socket={socket} />
+          </div>
+          <Users socket={socket} />
+        </>
+      )}
+    </>
+  );
+};
+
+const App = () => {
   const [init, setInit] = useState(false);
   const [serverIp, setServerIp] = useState("");
   const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (init) {
-      const newSocket = io(serverIp);
-      setSocket(newSocket);
-    }
-
-    return () => newSocket.close();
-  }, [setSocket]);
 
   const handlerIp = (e) => {
     const { value } = e.target;
@@ -192,11 +207,12 @@ const App = () => {
 
   const connect = (e) => {
     e.preventDefault();
+    setInit(true);
   };
 
   return (
     <div className="App">
-      {!init && (
+      {!init ? (
         <div className="modal-background">
           <div className="modal">
             <form onSubmit={connect}>
@@ -214,19 +230,11 @@ const App = () => {
                 <input type="submit" value="Conectar" />
               </div>
               {error && <label className="error">Ip no válido</label>}
-              {!socket && <label className="error">No tienes conexión</label>}
             </form>
           </div>
         </div>
-      )}
-      {socket && (
-        <>
-          <div className="chat-container">
-            <Messages socket={socket} />
-            <MessageInput socket={socket} />
-          </div>
-          <Users socket={socket} />
-        </>
+      ) : (
+        <ChatApp serverIp={serverIp} />
       )}
     </div>
   );
