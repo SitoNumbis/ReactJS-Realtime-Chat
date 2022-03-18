@@ -222,20 +222,40 @@ const ChatApp = ({ serverIp }) => {
 const App = () => {
   const [init, setInit] = useState(false);
   const [serverIp, setServerIp] = useState("");
+  const [serverInput, setServerInput] = useState("");
   const [error, setError] = useState(false);
 
   const handlerIp = (e) => {
     const { value } = e.target;
+    let final = value;
     var regEx =
-      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+      /(http:\/\/)?(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:3000)?$/;
     if (value.match(regEx)) setError(false);
     else setError(true);
-    setServerIp(value);
+    if (value.indexOf(":3000") === -1 && value.indexOf(":") === -1)
+      final = `${final}:3000`;
+    if (value.indexOf("http://") === -1 && value.indexOf("127.0.0.1") === -1)
+      final = `http://${final}`;
+    else final = final;
+    setServerIp(final);
+    setServerInput(value);
   };
+
+  useEffect(() => {
+    if (serverIp !== "") {
+      const ip = sessionStorage.getItem("serverIp");
+      if (ip !== null) {
+        setServerIp(ip);
+        setInit(true);
+      }
+    }
+  }, []);
 
   const connect = (e) => {
     e.preventDefault();
+    console.log(serverIp);
     setInit(true);
+    sessionStorage.setItem("serverIp", serverIp);
   };
 
   return (
@@ -252,7 +272,7 @@ const App = () => {
                   id="ipv4"
                   name="ipv4"
                   placeholder="###.###.###.###:3000"
-                  value={serverIp}
+                  value={serverInput}
                   onChange={handlerIp}
                 />
                 <input type="submit" value="Conectar" />
