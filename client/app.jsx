@@ -1,6 +1,8 @@
 "use strict";
 
 var React = require("react");
+const NodeRSA = require('node-rsa');
+const key = new NodeRSA({b: 512});
 
 var socket = io.connect();
 
