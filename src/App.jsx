@@ -45,10 +45,34 @@ const Users = ({ socket }) => {
 
   useEffect(() => {
     socket.on("init", init);
+    socket.on("user:joined", userJoined);
+    socket.on("user:left", userLeft);
+    socket.on("change:name", changeName);
     return () => {
       socket.off("init", init);
+      socket.off("user:joined", userJoined);
+      socket.off("user:left", userLeft);
+      socket.off("change:name", changeName);
     };
   }, [socket]);
+
+  const userJoined = (user) => {
+    setUsersState([...usersState, user]);
+  };
+
+  const userLeft = (user) => {
+    const users = usersState;
+    var index = users.indexOf(user);
+    users.splice(index, 1);
+    setUsersState(users);
+  };
+
+  const changeName = ({ oldName, newName }) => {
+    const users = usersState;
+    var index = users.indexOf(oldName);
+    users.splice(index, 1, newName);
+    setUsersState(users);
+  };
 
   const init = (data) => {
     const { name, users } = data;
@@ -60,7 +84,6 @@ const Users = ({ socket }) => {
     e.preventDefault();
     socket.emit("change:name", { name: value }, (result) => {
       if (!result) return alert("Ha ocurrido un error al cambiar el nombre");
-
       const users = usersState;
       var index = users.indexOf(userName);
       users.splice(index, 1, value);
@@ -155,23 +178,28 @@ const Messages = ({ socket }) => {
   );
 };
 
-const UsersList = ({ socket, users }) => {
+const UsersList = ({ users }) => {
+  const [usersState, setUsersState] = useState([]);
+
+  useEffect(() => {
+    setUsersState(users);
+  }, [users]);
+
   return (
     <ul className="users-list">
       <h4 style={{ marginBottom: 10 }}>Usuarios conectados</h4>
-      {users.map((user, i) => {
+      {usersState.map((user, i) => {
         return <li key={i}>{user}</li>;
       })}
     </ul>
   );
 };
 
-const ChatApp = ({ servierIp }) => {
+const ChatApp = ({ serverIp }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("localhost:3000");
-    alert(newSocket.);
+    const newSocket = io(serverIp);
     setSocket(newSocket);
     return () => newSocket.close();
   }, [setSocket]);
