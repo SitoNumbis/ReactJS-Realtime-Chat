@@ -253,7 +253,6 @@ const App = () => {
 
   const connect = (e) => {
     e.preventDefault();
-    console.log(serverIp);
     setInit(true);
     sessionStorage.setItem("serverIp", serverIp);
   };
