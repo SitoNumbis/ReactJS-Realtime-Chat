@@ -242,7 +242,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (serverIp !== "") {
+    if (serverIp === "") {
       const ip = sessionStorage.getItem("serverIp");
       if (ip !== null) {
         setServerIp(ip);
